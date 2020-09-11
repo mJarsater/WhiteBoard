@@ -110,12 +110,14 @@ class UDP extends Thread{
             //Datapacket för inkommande data
             DatagramPacket incommingData = new DatagramPacket(buffer, buffer.length);
 
-            //Loop för att ta in inkommande data
+            //Loop för att fånga upp in inkommande data
             while(true){
                 datagramSocket.receive(incommingData);
                 byte [] data = incommingData.getData();
-                incomming = new String(data, StandardCharsets.UTF_8);
+                incomming = new String(data);
+                System.out.print(incomming);
                 String [] xy = incomming.split(" ");
+                //MELLANRUMMET - Kolla på jockes lösning
                 Point p = new Point(Integer.parseInt(xy[0]), Integer.parseInt(xy[1]));
                 draw.addPoint(new Point(p));
 
