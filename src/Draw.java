@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.lang.reflect.Array;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -110,12 +111,12 @@ class UDP extends Thread{
             //Datapacket för inkommande data
             DatagramPacket incommingData = new DatagramPacket(buffer, buffer.length);
 
-            //Loop för att ta in inkommande data
+            //Loop för att fånga upp in inkommande data
             while(true){
                 datagramSocket.receive(incommingData);
                 byte [] data = incommingData.getData();
-                incomming = new String(data, StandardCharsets.UTF_8);
-                String [] xy = incomming.split(" ");
+                incomming = new String(data);
+                String [] xy = incomming.trim().split(",");
                 Point p = new Point(Integer.parseInt(xy[0]), Integer.parseInt(xy[1]));
                 draw.addPoint(new Point(p));
 
@@ -129,7 +130,7 @@ class UDP extends Thread{
 
     public void send(Point point){
         try {
-            String send = Integer.toString(point.x)+ " " + Integer.toString(point.y);
+            String send = Integer.toString(point.x)+ "," + Integer.toString(point.y);
             byte[] data = send.getBytes();
             InetAddress toAdress = InetAddress.getByName(host);
             DatagramPacket datagramPacket = new DatagramPacket(data, data.length, toAdress, toPort);
