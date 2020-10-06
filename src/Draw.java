@@ -17,7 +17,7 @@ public class Draw extends JFrame {
 
     public static void main(String[] args) {
         Draw draw = new Draw(args);
-        //Skapar UDP
+
 
 
     }
@@ -33,13 +33,13 @@ public class Draw extends JFrame {
 
 
     public void addPoint(Point p){
-        this.paper.addPoint(p);
+        this.paper.addToWhiteBoard(p);
     }
 }
 
 class Paper extends JPanel {
-    //PUBLIC?
-    private HashSet hs = new HashSet();
+
+    public HashSet<Point> hs = new HashSet();
     private Draw draw;
 
     public Paper(Draw draw) {
@@ -52,11 +52,16 @@ class Paper extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.black);
-        Iterator i = hs.iterator();
+        Iterator<Point> i = hs.iterator();
         while(i.hasNext()) {
-            Point p = (Point)i.next();
+            Point p = i.next();
             g.fillOval(p.x, p.y, 2, 2);
         }
+    }
+
+    public void addToWhiteBoard(Point p){
+        hs.add(p);
+        repaint();
     }
 
     public void addPoint(Point p) {
@@ -87,7 +92,6 @@ class UDP extends Thread{
     private int myPort;
     private String host;
     private Draw draw;
-    private String incomming;
     private DatagramSocket datagramSocket;
 
 
@@ -115,8 +119,8 @@ class UDP extends Thread{
             while(true){
                 datagramSocket.receive(incommingData);
                 byte [] data = incommingData.getData();
-                incomming = new String(data);
-                String [] xy = incomming.trim().split(",");
+                String incoming = new String(data);
+                String [] xy = incoming.trim().split(",");
                 Point p = new Point(Integer.parseInt(xy[0]), Integer.parseInt(xy[1]));
                 draw.addPoint(new Point(p));
 
@@ -130,7 +134,7 @@ class UDP extends Thread{
 
     public void send(Point point){
         try {
-            String send = Integer.toString(point.x)+ "," + Integer.toString(point.y);
+            String send = point.x + "," + point.y;
             byte[] data = send.getBytes();
             InetAddress toAdress = InetAddress.getByName(host);
             DatagramPacket datagramPacket = new DatagramPacket(data, data.length, toAdress, toPort);
@@ -143,7 +147,3 @@ class UDP extends Thread{
     }
 }
 
-/*  -protected DatagramSocket DatagramSocket(int port, InetAddress inetaddress):-
-    -to send data: DatagramPacket(byte buf[], int length, InetAddress inetaddress, int port):-
-    -to receive the data: DatagramPacket(byte buf[], int length):-
- */
