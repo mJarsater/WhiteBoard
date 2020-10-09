@@ -1,11 +1,9 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import java.lang.reflect.Array;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Draw extends JFrame {
@@ -49,14 +47,18 @@ class Paper extends JPanel {
         addMouseMotionListener(new L2());
     }
 
-    public void paintComponent(Graphics g) {
+    public synchronized void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.black);
-        Iterator<Point> i = hs.iterator();
-        while(i.hasNext()) {
-            Point p = i.next();
+        for(Point point: hs){
+            Point p = point;
             g.fillOval(p.x, p.y, 2, 2);
         }
+        /*Iterator<Point> i = hs.iterator();
+        while(i.hasNext()) {
+            Point p = i.next();
+            g.fillOval(p.x, p.y, 1, 1);
+        }*/
     }
 
     public void addToWhiteBoard(Point p){
