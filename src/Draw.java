@@ -37,7 +37,7 @@ public class Draw extends JFrame {
 
 class Paper extends JPanel {
 
-    public HashSet<Point> hs = new HashSet();
+    public HashSet<Point> hs = new HashSet<>();
     private Draw draw;
 
     public Paper(Draw draw) {
@@ -50,9 +50,11 @@ class Paper extends JPanel {
     public synchronized void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.black);
-        for(Point point: hs){
-            Point p = point;
-            g.fillOval(p.x, p.y, 2, 2);
+
+        for(Iterator<Point> it = hs.iterator(); it.hasNext(); ){
+
+            Point p = it.next();
+            g.fillOval(p.x, p.y, 2,2 );
         }
         /*Iterator<Point> i = hs.iterator();
         while(i.hasNext()) {
