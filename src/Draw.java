@@ -130,7 +130,7 @@ class UDP extends Thread{
 
                 byte [] data = incommingData.getData();
                 String incoming = new String(data);
-                String [] xy = incoming.trim().split(" ");
+                String [] xy = incoming.trim().split(",");
 
 
                 Point p = new Point(Integer.parseInt(xy[0]), Integer.parseInt(xy[1]));
@@ -162,7 +162,7 @@ class UDP extends Thread{
    /* Metod som hämtar x och y punkterna för en Point
     *  och sparar de som bytes i en array. */
     public byte[] getByteArray(Point p){
-        byte[] data = (Integer.toString(p.x) + " " +Integer.toString(p.y)).getBytes();
+        byte[] data = (p.x + "," + p.y).getBytes();
         return data;
     }
 
