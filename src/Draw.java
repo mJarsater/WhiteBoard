@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.*;
+import java.util.List;
 
 public class Draw extends JFrame {
     public Paper paper = new Paper(this);
@@ -12,12 +13,8 @@ public class Draw extends JFrame {
     private String[]args;
 
 
-
     public static void main(String[] args) {
-        Draw draw = new Draw(args);
-
-
-
+        new Draw(args);
     }
 
     public Draw(String[]args) {
@@ -37,7 +34,10 @@ public class Draw extends JFrame {
 
 class Paper extends JPanel {
 
-    public HashSet<Point> hs = new HashSet<>();
+    /* Skapar en HashSet och gör den sedan
+    *  "thread"-safe genom synchronizedSet(HashSet)*/
+    public HashSet<Point> hs = new HashSet();
+    public Set<Point> set = Collections.synchronizedSet(hs);
     private Draw draw;
 
     public Paper(Draw draw) {
@@ -50,30 +50,32 @@ class Paper extends JPanel {
     public synchronized void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.black);
-
-        for(Iterator<Point> it = hs.iterator(); it.hasNext(); ){
-
-            Point p = it.next();
-            g.fillOval(p.x, p.y, 2,2 );
+        List<Point> pointList = new ArrayList<>(set);
+        for(int i = 0; i< pointList.size(); i++){
+            Point p = pointList.get(i);
+            g.fillOval(p.x, p.y, 2, 2);
         }
-        /*Iterator<Point> i = hs.iterator();
-        while(i.hasNext()) {
-            Point p = i.next();
-            g.fillOval(p.x, p.y, 1, 1);
-        }*/
     }
 
+    /* Metod som tar parametern och
+    *  lägger till den vår HashSet */
     public void addToWhiteBoard(Point p){
-        hs.add(p);
+        set.add(p);
         repaint();
     }
 
+    /* Metod som tar parametern
+    * och lägger till det i vår
+    * hashset, ritar ut det, och
+    * kallar på sendPoint */
     public void addPoint(Point p) {
-        hs.add(p);
+        set.add(p);
         repaint();
-        this.sendPoint(draw.udp, p);
+        sendPoint(draw.udp, p);
     }
 
+    /* Metod som kallar på metoden send
+    *  i vår UDP. */
     public void sendPoint(UDP udp, Point p){
         udp.send(p);
     }
@@ -98,7 +100,7 @@ class UDP extends Thread{
     private Draw draw;
     private DatagramSocket datagramSocket;
 
-
+    // Konstruktor för klassen UDP
     public UDP(String[] args, Draw draw){
         this.myPort = Integer.parseInt(args[0]);
         this.host = args[1];
