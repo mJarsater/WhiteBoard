@@ -100,7 +100,7 @@ class UDP extends Thread{
     private int myPort;
     private String host;
     private Draw draw;
-    private DatagramSocket datagramSocket;
+
 
     // Konstruktor för klassen UDP
     public UDP(String[] args, Draw draw){
@@ -111,13 +111,13 @@ class UDP extends Thread{
         start();
     }
 
-    /* start/run-metod som kör  */
+    /* start/run-metod som kör kontinuerligt */
     public void run(){
         try {
             // Socket för min port
-             datagramSocket = new DatagramSocket(myPort);
+            DatagramSocket datagramSocket = new DatagramSocket(myPort);
 
-            //buffer för inkommande data
+            //buffer för inkommande data, men myycket utrymme
             byte[] buffer = new byte[65536];
 
             //Datapacket för inkommande data
@@ -130,12 +130,11 @@ class UDP extends Thread{
 
                 byte [] data = incommingData.getData();
                 String incoming = new String(data);
-                String [] xy = incoming.trim().split(",");
+                String [] xy = incoming.trim().split(" ");
 
 
                 Point p = new Point(Integer.parseInt(xy[0]), Integer.parseInt(xy[1]));
                 draw.addPoint(p);
-
 
                 incommingData.setLength(buffer.length);
             }
