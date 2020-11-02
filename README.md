@@ -1,3 +1,3 @@
 # WhiteBoard
 
-Gör ett program som implementerar en chattklient som kan sända och ta emot textmeddelanden. Chattklienten ska koppla upp sig till en chattserver via en stream socket. När en chattklient sänder ett textmeddelande till chattservern så sänder chattservern detta textmeddelande till alla anslutna chattklienter.
+Gör ett program med ett grafiskt användargränssnitt som implementerar ett enkelt distribuerat ritprogram (whiteboard). Allt som ritas ska sändas med UDP till ett annat identiskt program som ritar upp exakt samma bild. Det andra programmet ska alltså fungera på samma sätt.
